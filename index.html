@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <title>Today's Forecast</title>
+</head>
+
+<body>
+    <header class="hero">
+        <h1>Weather Dashboard<i class="fas fa-sun"></i><i class="fas fa-cloud-sun"></i></h1>
+    </header>
+
+    <main class="row justify-space-between border">
+        <div class="col-12 col-md-3 border search-city" id="city-search">
+            <p>Search for a City:</p>
+            <div class="search-form">
+                <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input" />
+                <button type="submit" class="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+        </div>
+        <div class="col-12 col-md-9">
+            <div class="row justify-space-between">
+                <div class="col-12 border current-day" id="current-city-weather">
+                    <p class="current-city">San Francisco (<span id="currentDay"></span>) <span id="currentIcon"></span></p>
+                    <div id="current-temperature"></div>
+                    <div id="current-humidity"></div>
+                    <div id="current-wind-speed"></div>
+                    <div id="uv-index"></div>
+                </div>
+                <div class="col-12 border">
+                    <p class="five-day">5-Day Forecast:</p>
+                    <div id="fiveday-city-weather" class="border"></div>
+                        <div class="card">
+                            <div>
+
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
