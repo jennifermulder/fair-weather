@@ -1,6 +1,12 @@
 .hero {
     margin: auto;
     width: fit-content;
+    
+}
+
+header {
+    background-color: rgb(58, 54, 54);
+    color: white;
 }
 
 
