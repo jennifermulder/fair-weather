@@ -1,6 +1,9 @@
+var searchButtonEl = document.querySelector("#search-button");
+var nameInputEl = document.querySelector("#cityname");
 var citySearchEl = document.querySelector("#city-search");
 var currentCityWeatherEl = document.querySelector("#current-city-weather");
 var fiveDayCityWeatherEl = document.querySelector("#fiveday-city-weather");
+var weatherButtonsEl = 0;
 
 
 //passing cityName parameter into the function so that it can be searched
@@ -20,7 +23,7 @@ var getCurrentWeather = function (cityName) {
         // incase theres any issues with the request
         .catch(function (error) {
             // Notice this `.catch()` getting chained onto the end of the `.then()` method
-            alert("Unable to connect to GitHub");
+            alert("Unable to connect to Weather Data");
         });
 };
 
@@ -39,22 +42,25 @@ var getFiveDayWeather = function (cityName) {
         })
         // incase theres any issues with the request
         .catch(function (error) {
-            // Notice this `.catch()` getting chained onto the end of the `.then()` method
-            alert("Unable to connect to GitHub");
+            
+            alert("Unable to connect to Weather Data");
         });
 };
 
 var formSubmitHandler = function (event) {
+    console.log("works");
     event.preventDefault();
     // get value from input element
-    var username = nameInputEl.value.trim();
+    var cityName = nameInputEl.value.trim();
 
-    if (username) {
-        getUserRepos(username);
+    if (cityName) {
+        getCurrentWeather(cityName);
+        getFiveDayWeather(cityName);
+
         //to clear the form 
         nameInputEl.value = "";
     } else {
-        alert("Please enter a GitHub username");
+        alert("Please enter a valid city name");
     }
 };
 
@@ -62,10 +68,10 @@ var formSubmitHandler = function (event) {
 var date = $("#currentDay").text(`${moment().format("MM/DD/YYYY")}`);
 console.log(date);
 
-var temperature = 0
-var humidity = 0
-var windSpeed = 0
-var uvIndex = 0
+// var temperature = 0
+// var humidity = 0
+// var windSpeed = 0
+// var uvIndex = 0
 // var icon = function () {
 //     if (X = "sunny") {
 //         value = <i class="fas fa-sun"></i>
@@ -73,7 +79,7 @@ var uvIndex = 0
 // }
 
 
-var currentIconEl = document.querySelector("#currenticon");
+// var currentIconEl = document.querySelector("#currenticon");
 
 //display the responses/ create elements ( how to pull in parameters)
 var displayCurrentWeather = function () {
@@ -150,34 +156,37 @@ var displayCurrentWeather = function () {
 
 
 
-//display search results from saved in local storage (get item, append to element created) DISPLAY AS BUTTON
-var displayCitySearch = function () {
+// //display search results from saved in local storage (get item, append to element created) DISPLAY AS BUTTON
+// var displayCitySearch = function () {
     
-}
+//     var weatherButtonsEl = document.createElement("button");
+//     weatherButtonsEl.textContent = cityName;
+// }
 
-//function to save search results in local storage
-var saveSearch = function () {
+// //function to save search results in local storage
+// var saveSearch = function () {
 
-}
+// }
 
 
-//looks for event (button click event listener below, when you click on a saved weather button)
-var buttonClickHandler = function(event) {
-    //identifies the target of the event (what was clicked on) and gets value of that "data-city-name" attribute
-    var cityName = event.target.getAttribute("data-city-name")
-    //value that is retrieved
-    //console.log(language);
-    if (cityName) {
-        //pass this specified language into the getFeaturedRepos function (use as input)
-        getCurrentWeather(cityName);
-        getFiveDayWeather(cityName);
+// //looks for event (button click event listener below, when you click on a saved weather button)
+// var buttonClickHandler = function(event) {
+//     //identifies the target of the event (what was clicked on) and gets value of that "data-city-name" attribute
+//     var cityName = event.target.getAttribute("data-city-name")
+//     //value that is retrieved
+//     //console.log(language);
+//     if (cityName) {
+//         //pass this specified language into the getFeaturedRepos function (use as input)
+//         getCurrentWeather(cityName);
+//         getFiveDayWeather(cityName);
 
-        // clear old content (clears it first - asynchronous)
-        currentCityWeatherEl.textContent = "";
-        fiveDayCityWeatherEl.textContent = "";
-      }
-}
+//         // clear old content (clears it first - asynchronous)
+//         currentCityWeatherEl.textContent = "";
+//         fiveDayCityWeatherEl.textContent = "";
+//       }
+// }
 
-userFormEl.addEventListener("submit", formSubmitHandler);
+searchButtonEl.addEventListener("click", formSubmitHandler);
+console.log(searchButtonEl);
 
-weatherButtonsEl.addEventListener("click", buttonClickHandler);
+// weatherButtonsEl.addEventListener("click", buttonClickHandler);
