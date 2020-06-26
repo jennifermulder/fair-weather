@@ -3,7 +3,6 @@ var nameInputEl = document.querySelector("#cityname");
 var citySearchEl = document.querySelector("#city-search");
 var currentCityWeatherEl = document.querySelector("#current-city-weather");
 var fiveDayCityWeatherEl = document.querySelector("#fiveday-city-weather");
-var weatherButtonsEl = 0;
 
 
 //passing cityName parameter into the function so that it can be searched
@@ -22,7 +21,6 @@ var getCurrentWeather = function (cityName) {
         })
         // incase theres any issues with the request
         .catch(function (error) {
-            // Notice this `.catch()` getting chained onto the end of the `.then()` method
             alert("Unable to connect to Weather Data");
         });
 };
@@ -68,27 +66,30 @@ var formSubmitHandler = function (event) {
 var date = $("#currentDay").text(`${moment().format("MM/DD/YYYY")}`);
 console.log(date);
 
-// var temperature = 0
-// var humidity = 0
-// var windSpeed = 0
-// var uvIndex = 0
-// var icon = function () {
-//     if (X = "sunny") {
-//         value = <i class="fas fa-sun"></i>
-//     }
-// }
+var temperature = 0
+var humidity = 0
+var windSpeed = 0
+var uvIndex = 0
+var icon = function () {
+    if (X = "sunny") {
+        value = `<i class="fas fa-sun"></i>`;
+    }
+}
 
 
 // var currentIconEl = document.querySelector("#currenticon");
 
 //display the responses/ create elements ( how to pull in parameters)
-var displayCurrentWeather = function () {
+var displayCurrentWeather = function (data, cityName) {
+    console.log(displayCurrentWeather);
+    console.log(data);
+    console.log(cityName);
     var currentNameDateIconEl = document.createElement("div");
     currentNameDateIconEl.className = "current-city";
 
     var nameEl = document.createElement("p")
     nameEl.id = "currentName"
-    nameEl.textContent = currentName;
+    nameEl.textContent = cityName.textContent;
     console.log(nameEl);
 
     currentNameDateIconEl.appendChild(nameEl);
@@ -108,15 +109,15 @@ var displayCurrentWeather = function () {
     currentCityWeatherEl.appendChild(currentNameDateIconEl);
 
     //create stats ex:temperature div
-    var currentTemperatureEl = createElement("div");
+    var currentTemperatureEl = document.createElement("div");
     currentTemperatureEl.innerHTML("Temperature: " + temperature + " F");
     currentCityWeatherEl.appendChild(currentTemperatureEl);
 
-    var currentHumidityEl = createElement("div");
+    var currentHumidityEl = document.createElement("div");
     currentHumidityEl.innerHTML("Humidity: " + humidity + "%");
     currentCityWeatherEl.appendChild(currentHumidityEl);
 
-    var currentwindSpeedEl = createElement("div");
+    var currentwindSpeedEl = document.createElement("div");
     currentwindSpeedEl.innerHTML("Wind Speed: " + windSpeed + " MPH");
     currentCityWeatherEl.appendChild(currentwindSpeedEl);
 
@@ -127,23 +128,23 @@ var displayCurrentWeather = function () {
     //create 5 day forecast
     for (i = 0; i < 6; i++) {
         //create 5 cards
-        var weatherCardEl = createElement("div");
+        var weatherCardEl = document.createElement("div");
         weatherCardEl.className = "card";
 
         //create date element
-        var futureDateEl = createElement("div");
+        var futureDateEl = document.createElement("div");
         futureDateEl.textContent = date;
         weatherCardEl.appendChild(futureDateEl);
 
-        var futureIconEl = createElement("div");
-        futureIconEl.innerHTML = icon;
+        var futureIconEl = document.createElement("div");
+        futureIconEl.innerHTML = `<i class="fas fa-sun"></i>`;
         weatherCardEl.appendChild(futureIconEl);
 
-        var futureTempEl = createElement("div");
+        var futureTempEl = document.createElement("div");
         futureTempEl.textContent = "Temp: " + temperature + " F";
         weatherCardEl.appendChild(futureTempEl);
 
-        var futureHumidityEl = createElement("div");
+        var futureHumidityEl = document.createElement("div");
         futureHumidityEl.textContent = "Humidity: " + humidity + "%";
         weatherCardEl.appendChild(futureHumidityEl);
     
@@ -187,6 +188,5 @@ var displayCurrentWeather = function () {
 // }
 
 searchButtonEl.addEventListener("click", formSubmitHandler);
-console.log(searchButtonEl);
 
 // weatherButtonsEl.addEventListener("click", buttonClickHandler);
