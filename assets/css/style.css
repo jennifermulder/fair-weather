@@ -1,13 +1,12 @@
-.hero {
-    margin: auto;
-    width: fit-content;
-    
+.h1 {
+    margin: auto;    
 }
 
 header {
     background-color: rgb(58, 54, 54);
     color: white;
 }
+
 
 
 .border {
@@ -37,7 +36,7 @@ header {
       font-weight: bold;
   }
 
-  .current-day {
+  .current-city {
     font-size: large;
     font-weight: bold;
   }
@@ -45,5 +44,7 @@ header {
   .search-city {
     font-size: small;
     font-weight: bold;
+    background-color: lightgrey;
   }
+  
   
