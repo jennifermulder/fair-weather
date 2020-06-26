@@ -7,13 +7,14 @@ var fiveDayCityWeatherEl = document.querySelector("#fiveday-city-weather");
 
 //passing cityName parameter into the function so that it can be searched
 var getCurrentWeather = function (cityName) {
-    var apiCurrentUrl = "https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=a514515ab34188949832b8c89e71bb2e";
+    var apiCurrentUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=a514515ab34188949832b8c89e71bb2e";
 
     fetch(apiCurrentUrl)
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-                    displayCurrentWeather(data.items, cityName);
+                    
+                    displayCurrentWeather(data, cityName);
                 });
             } else {
                 alert("Error: " + response.statusText);
@@ -32,7 +33,7 @@ var getFiveDayWeather = function (cityName) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-                    displayCurrentWeather(data.items, cityName);
+                    displayFiveDayWeather(data, cityName);
                 });
             } else {
                 alert("Error: " + response.statusText);
@@ -63,25 +64,25 @@ var formSubmitHandler = function (event) {
 };
 
 //current date 
-var date = $("#currentDay").text(`${moment().format("MM/DD/YYYY")}`);
+var date = moment().format("MM/DD/YYYY")// $("#currentDay").text(`${moment().format("MM/DD/YYYY")}`);
 console.log(date);
 
-var temperature = 0
-var humidity = 0
-var windSpeed = 0
-var uvIndex = 0
-var icon = function () {
-    if (X = "sunny") {
-        value = `<i class="fas fa-sun"></i>`;
-    }
-}
+
 
 
 // var currentIconEl = document.querySelector("#currenticon");
 
 //display the responses/ create elements ( how to pull in parameters)
 var displayCurrentWeather = function (data, cityName) {
-    console.log(displayCurrentWeather);
+    let createHtml = function(temp, humidity, windSpeed, uv) {
+        let html = `<p class="current-city">${cityName} (<span id="currentDay">${date}</span>) <span id="currentIcon"></span></p>
+    <div id="current-temperature">${temp}</div>
+    <div id="current-humidity">${humidity}</div>
+    <div id="current-wind-speed">${windSpeed}</div>
+    <div id="uv-index">${uv}</div>`
+        return html
+    }
+    
     console.log(data);
     console.log(cityName);
     var currentNameDateIconEl = document.createElement("div");
@@ -89,7 +90,7 @@ var displayCurrentWeather = function (data, cityName) {
 
     var nameEl = document.createElement("p")
     nameEl.id = "currentName"
-    nameEl.textContent = cityName.textContent;
+    nameEl.textContent = cityName;
     console.log(nameEl);
 
     currentNameDateIconEl.appendChild(nameEl);
@@ -106,29 +107,53 @@ var displayCurrentWeather = function (data, cityName) {
 
     //append children
     currentNameDateIconEl.appendChild(iconEl);
-    currentCityWeatherEl.appendChild(currentNameDateIconEl);
+    currentCityWeatherEl.innerHTML = createHtml("Temperature: " + data.main.temp + " F", '40%', '40mph', '10');//.appendChild(currentNameDateIconEl);
 
     //create stats ex:temperature div
     var currentTemperatureEl = document.createElement("div");
-    currentTemperatureEl.innerHTML("Temperature: " + temperature + " F");
+   // currentTemperatureEl.innerHTML("Temperature: " + data.list[0].main.temp + " F");
     currentCityWeatherEl.appendChild(currentTemperatureEl);
 
     var currentHumidityEl = document.createElement("div");
-    currentHumidityEl.innerHTML("Humidity: " + humidity + "%");
+   // currentHumidityEl.innerHTML("Humidity: " + data.list[0].main.humidity + "%");
     currentCityWeatherEl.appendChild(currentHumidityEl);
 
     var currentwindSpeedEl = document.createElement("div");
-    currentwindSpeedEl.innerHTML("Wind Speed: " + windSpeed + " MPH");
+   //s currentwindSpeedEl.innerHTML("Wind Speed: " + data.list[0].wind.speed + " MPH");
     currentCityWeatherEl.appendChild(currentwindSpeedEl);
 
     //uv??
 }
 
-var displayCurrentWeather = function () {
+var displayFiveDayWeather = function (data, cityName) {
+    console.log(data)
+    console.log(cityName)
+    let createHTML = function(date, temp, humidity) {
+        let html = `
+                <div id="five-date">
+                    ${date}
+                 </div>
+                 <div id="five-icon">
+                 <i class="fas fa-sun"></i>
+                 </div>
+                 <div id="five-temp">
+                        ${temp}
+                 </div>
+                 <div id="five-humidity">
+                    ${humidity}
+                 </div>`
+        return html;
+    }
     //create 5 day forecast
+
     for (i = 0; i < 6; i++) {
+        let d = data.list[i];
+        let cardDiv = document.createElement('div')
+        cardDiv.classList.add('card');
+        cardDiv.innerHTML = createHTML(d.dt_txt, "Temp: " + d.main.temp + " F", "Humidity: " + d.main.humidity + "%")
+        fiveDayCityWeatherEl.append(cardDiv)
         //create 5 cards
-        var weatherCardEl = document.createElement("div");
+       /* var weatherCardEl = document.createElement("div");
         weatherCardEl.className = "card";
 
         //create date element
@@ -141,13 +166,13 @@ var displayCurrentWeather = function () {
         weatherCardEl.appendChild(futureIconEl);
 
         var futureTempEl = document.createElement("div");
-        futureTempEl.textContent = "Temp: " + temperature + " F";
+        futureTempEl.textContent = "Temp: " + data.list[i].main.temp + " F";
         weatherCardEl.appendChild(futureTempEl);
 
         var futureHumidityEl = document.createElement("div");
-        futureHumidityEl.textContent = "Humidity: " + humidity + "%";
+        futureHumidityEl.textContent = "Humidity: " + data.list[i].humidity + "%";
         weatherCardEl.appendChild(futureHumidityEl);
-    
+    */
     }
 
     //saveSearch();
