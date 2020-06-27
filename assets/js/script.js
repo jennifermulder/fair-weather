@@ -7,10 +7,12 @@ var fiveDayCityContainerEl = document.querySelector("#fiveday-city-container");
 var fiveDayCityWeatherEl = document.querySelector("#fiveday-city-weather");
 
 
-//passing cityName parameter into the function so that it can be searched
+//API Calls
 var getCurrentWeather = function (cityName) {
-    var apiCurrentUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid&appid=a514515ab34188949832b8c89e71bb2e";
-
+    var apiCurrentUrl =
+        "https://api.openweathermap.org/data/2.5/weather?q=" +
+        cityName +
+        "&units=imperial&appid&appid=a514515ab34188949832b8c89e71bb2e";
     fetch(apiCurrentUrl)
         .then(function (response) {
             if (response.ok) {
@@ -27,15 +29,18 @@ var getCurrentWeather = function (cityName) {
             alert("Unable to connect to Weather Data");
         });
 };
-
 var getUVIndex = function (lat, lon) {
-    var apiUVIUrl = "http://api.openweathermap.org/data/2.5/uvi?appid=a514515ab34188949832b8c89e71bb2e&lat=" + lat + "&lon=" + lon;
-
+    var apiUVIUrl =
+        "http://api.openweathermap.org/data/2.5/uvi?appid=a514515ab34188949832b8c89e71bb2e&lat=" +
+        lat +
+        "&lon=" +
+        lon;
     fetch(apiUVIUrl)
         .then(function (response) {
             if (response.ok) {
-                response.json().then(function (data) {                    
-                    displayCurrentWeather(data.uv);
+                response.json().then(function (data) {
+                    // console.log(data);
+                    displayCurrentUVWeather(data.value); //pass the uv into a separate HTML generator
                 });
             } else {
                 alert("Error: " + response.statusText);
@@ -48,8 +53,10 @@ var getUVIndex = function (lat, lon) {
 };
 
 var getFiveDayWeather = function (cityName) {
-    var apiFiveDayUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid&appid=a514515ab34188949832b8c89e71bb2e";
-
+    var apiFiveDayUrl =
+        "https://api.openweathermap.org/data/2.5/forecast?q=" +
+        cityName +
+        "&units=imperial&appid&appid=a514515ab34188949832b8c89e71bb2e";
     fetch(apiFiveDayUrl)
         .then(function (response) {
             if (response.ok) {
@@ -62,180 +69,212 @@ var getFiveDayWeather = function (cityName) {
         })
         // incase theres any issues with the request
         .catch(function (error) {
-            
             alert("Unable to connect to Weather Data");
         });
 };
 
+
+//when search button is clicked, form is submitted
 var formSubmitHandler = function (event) {
     console.log("works");
     event.preventDefault();
     // get value from input element
     var cityName = nameInputEl.value.trim();
-
     if (cityName) {
-        getCurrentWeather(cityName);
-        getFiveDayWeather(cityName);
-        saveCityName(cityName);
-
-        //to clear the form 
-        nameInputEl.value = "";
-
-        // displayCitySearch();
+        startFunctions(cityName);
     } else {
         alert("Please enter a valid city name");
     }
 };
 
-//current date 
-var date = moment().format("MM/DD/YYYY")// $("#currentDay").text(`${moment().format("MM/DD/YYYY")}`);
-console.log(date);
+var weatherButtonHandlers = function (event) {
+    // console.log(event.target);
+    var cityName = event.target.value;
+    startFunctions(cityName);
+}
 
-
-
-
-// var currentIconEl = document.querySelector("#currenticon");
+// do or handle the api logic and local storage save
+var startFunctions = function(cityName) {
+    getCurrentWeather(cityName);
+    getFiveDayWeather(cityName);
+    saveCityName(cityName);
+    //to clear the form
+    nameInputEl.value = ""
+    ;
+}
+//current date
+var date = moment().format("MM/DD/YYYY");
+// console.log(date);
 
 //display the responses/ create elements ( how to pull in parameters)
 var displayCurrentWeather = function (data, cityName) {
-    
-    //let icon = data.weather[0].icon
-    let createHtml = function(temp, humidity, windSpeed, uv) {
-        let html = `<p class="current-city">${cityName} (<span id="currentDay">${date}</span>) <span id="currentIcon"></span></p>
-    <div id="current-temperature">${temp}</div>
-    <div id="current-humidity">${humidity}</div>
-    <div id="current-wind-speed">${windSpeed}</div>
-    <div id="uv-index">${uv}</div>`
-        return html
-    }
-    
-    console.log(data);
+    //dynamically create each element for current weather
+    // use const over var when you don't want side effects also it fails LOUDLY
+    const icon = data.weather[0].icon;
+    const createHtml = function (temp, humidity, windSpeed, uv) {
+
+        const html = `<p class="current-city">${cityName} (<span id="currentDay">${date}</span>) <img src=${
+            "http://openweathermap.org/img/w/" + icon + ".png"}></img></p>
+                <div id="current-temperature">${temp}</div>
+                <div id="current-humidity">${humidity}</div>
+                <div id="current-wind-speed">${windSpeed}</div>`;
+        return html;
+    };
+    console.log(data.weather[0].icon);
     console.log(cityName);
     var currentNameDateIconEl = document.createElement("div");
     currentNameDateIconEl.className = "current-city";
 
-    var nameEl = document.createElement("p")
-    nameEl.id = "currentName"
-    nameEl.textContent = cityName;
-    console.log(nameEl);
+    currentCityWeatherEl.innerHTML = createHtml(
+        "Temperature: " + data.main.temp + " •F",
+        "Humidity: " + data.main.humidity + "%",
+        "Wind Speed: " + data.wind.speed + " MPH"
+    );
 
-    currentNameDateIconEl.appendChild(nameEl);
-
-    var dateEl = document.createElement("span")
-    dateEl.id = "currentDay";
-    dateEl.textContent = `${moment().format("MM/DD/YYYY")}`
-    console.log(dateEl);
-
-    currentNameDateIconEl.appendChild(dateEl);
-
-    var iconEl = document.createElement("span")
-    iconEl.id = "currentIcon";
-
-    //append children
-    currentNameDateIconEl.appendChild(iconEl);
-    currentCityWeatherEl.innerHTML = createHtml("Temperature: " + data.main.temp + " •F", "Humidity: " + data.main.humidity + "%", "Wind Speed: " + data.wind.speed + " MPH", '10');
-    
     //create stats ex:temperature div
     var currentTemperatureEl = document.createElement("div");
-   // currentTemperatureEl.innerHTML("Temperature: " + data.list[0].main.temp + " F");
+
     currentCityWeatherEl.appendChild(currentTemperatureEl);
-
     var currentHumidityEl = document.createElement("div");
-   // currentHumidityEl.innerHTML("Humidity: " + data.list[0].main.humidity + "%");
-    currentCityWeatherEl.appendChild(currentHumidityEl);
 
+    currentCityWeatherEl.appendChild(currentHumidityEl);
     var currentwindSpeedEl = document.createElement("div");
-   //s currentwindSpeedEl.innerHTML("Wind Speed: " + data.list[0].wind.speed + " MPH");
+
     currentCityWeatherEl.appendChild(currentwindSpeedEl);
 
-    //uv??
-}
+};
+//display UV value from nested API call
+var displayCurrentUVWeather = function (uv) {
+    // decide if it's favorable, moderate or severe
+
+    //create a div element
+    var uvIndexContainerEl = document.createElement("div");
+    // add it's text content "UV Index"
+    uvIndexContainerEl.textContent = "UV Index: ";
+    // create a span element
+    var uvIndexEl = document.createElement("span");
+    // set the textcontent or innertext or innerhtml to the uv variable
+    uvIndexEl.textContent = uv;
+    
+    //if low
+    if (uv < 3  ) {
+    //if moderate
+    // set the class attribute to the bootstrap class
+    uvIndexEl.classList.add('badge',"badge-success");
+    } else if( uv > 2 && uv < 6) {
+    uvIndexEl.classList.add('badge',"badge-warning");
+    } else {
+    uvIndexEl.classList.add('badge',"badge-danger");
+    }
+    //add it to the div
+    uvIndexContainerEl.appendChild(uvIndexEl);
+    //add the div to the dom
+    document.querySelector('#current-city-weather').appendChild(uvIndexContainerEl);
+};
+
 
 var displayFiveDayWeather = function (data, cityName) {
-    console.log(data)
-    console.log(cityName)
+    // console.log(data);
+    // console.log(cityName);
 
-    //create date element
     var forecastTextEl = document.createElement("p");
     forecastTextEl.textContent = "5-Day Forecast:";
-    forecastTextEl.className = "five-day"
+    forecastTextEl.className = "five-day";
+    fiveDayCityContainerEl.innerHTML = "";
+    fiveDayCityWeatherEl.innerHTML = "";
     fiveDayCityContainerEl.appendChild(forecastTextEl);
-
-    let createHTML = function(date, temp, humidity) {
+    let createHTML = function (date, icon, temp, humidity) {
+        //create elements
         let html = `
-                 <div id="five-date">
-                    ${date}
-                 </div>
-                 <div id="five-icon">
-                 <i class="fas fa-sun"></i>
-                 </div>
-                 <div id="five-temp">
-                        ${temp}
-                 </div>
-                 <div id="five-humidity">
-                    ${humidity}
-                 </div>`
+                <div id="five-date">
+                   ${date}
+                </div>
+                <div id="five-icon">
+               <img src=${
+            "http://openweathermap.org/img/w/" + icon + ".png"}></img>
+                </div>
+                <div id="five-temp">
+                       ${temp}
+                </div>
+                <div id="five-humidity">
+                   ${humidity}
+                </div>`;
         return html;
-    }
+    };
     //create 5 day forecast
+    // organize the forecasts by day
 
-    for (i = 0; i < 5; i++) {
-        let d = data.list[i];
+    var listOfForecastsOrganizedByDay = organizeMyDataByDay(data.list); // array of organized forecasts by day
+    // console.log('LIST OF FORECASTS BY DAY=>', listOfForecastsOrganizedByDay);
 
-        
-        let cardDiv = document.createElement('div')
-        cardDiv.classList.add('card', 'mx-2');
-        // let date = new date d.dt_txt.text.format("MM/DD/YYYY");
-        // d.dt_txt = new d.dt_txt.format("MM/DD/YYYY");
-        cardDiv.innerHTML = createHTML(d.dt_txt, "Temp: " + d.main.temp + " •F", "Humidity: " + d.main.humidity + "%")
-        fiveDayCityWeatherEl.append(cardDiv)
-        //create 5 cards
-       /* var weatherCardEl = document.createElement("div");
-        weatherCardEl.className = "card";
-
-        //create date element
-        var futureDateEl = document.createElement("div");
-        futureDateEl.textContent = date;
-        weatherCardEl.appendChild(futureDateEl);
-
-        var futureIconEl = document.createElement("div");
-        futureIconEl.innerHTML = `<i class="fas fa-sun"></i>`;
-        weatherCardEl.appendChild(futureIconEl);
-
-        var futureTempEl = document.createElement("div");
-        futureTempEl.textContent = "Temp: " + data.list[i].main.temp + " F";
-        weatherCardEl.appendChild(futureTempEl);
-
-        var futureHumidityEl = document.createElement("div");
-        futureHumidityEl.textContent = "Humidity: " + data.list[i].humidity + "%";
-        weatherCardEl.appendChild(futureHumidityEl);
-    */
+    //add the forecasts to dom
+    //loop through list of forecasts by day for the first 5 days (hard code the upper limit /or take a slice)
+    for (let i = 0; i < 5; i++) {
+        //take the first one for now
+        let d = listOfForecastsOrganizedByDay[i][0];
+        //create an element for each group 
+        let cardDiv = document.createElement("div");
+        cardDiv.classList.add("card", "mx-2", "bg-primary", "text-white");
+        //format the date to look like MM/DD/YYYY
+        var formattedDate = new moment(d.dt_txt).format('MM/DD/YYYY');
+        //pull the four data points
+        cardDiv.innerHTML = createHTML(
+            formattedDate,
+            d.weather[0].icon,
+            "Temp: " + d.main.temp + " •F",
+            "Humidity: " + d.main.humidity + "%"
+        );
+        //add them to the card
+        fiveDayCityWeatherEl.append(cardDiv);
     }
 
     //saveSearch();
+};
 
+//function to organize forecasts by day
+function organizeMyDataByDay(listOfDates) {
+    var groupOfForcastsByDate = {}; //map ex. new Map()
+    // iterated through the 40 objects in the array
+    for (let i = 0; i < listOfDates.length; i++) {
+        // then take each object's time stamp and check to see if a map has the date key
+        var forecast = listOfDates[i];
+        var key = new moment(forecast.dt_txt).format('MM/DD/YYYY'); // 6/30/2020
+        // if it does add it to a collection from that date
+        if (groupOfForcastsByDate.hasOwnProperty(key)) {
+            groupOfForcastsByDate[key].push(forecast);
+        } else {
+            // if it does not, create a new entry in the map
+            groupOfForcastsByDate[key] = [forecast];
+        }
+    }
+    // return a list not an object
+    return convertObjectToArray(groupOfForcastsByDate);
 }
 
+// function to convert object to array of objects
+function convertObjectToArray(groupOfForcastsByDate) {
+    //we need to go through every entry in the map and add that to a list
+    var keys = Object.keys(groupOfForcastsByDate); // here are my keys/dates
+    //for every entry or date key, add it to a list
+    var listOfDays = [];
 
-
-
-//display search results from saved in local storage (get item, append to element created) DISPLAY AS BUTTON
-// var displayCitySearch = function () {
-    
-//     var weatherButtonsEl = document.createElement("button");
-//     weatherButtonsEl.textContent = cityName;
-// }
-
-
+    for (let i = 0; i < keys.length; i++) {
+        var key = keys[i]; // 6/28/2020
+        var threeHourForecast = groupOfForcastsByDate[key];
+        // add the threeHourForecast collection to the list
+        listOfDays.push(threeHourForecast);
+    }
+    // return list of days
+    return listOfDays;
+}
 
 //function to save search results in local storage
-var saveCityName = function(cityName) {
+var saveCityName = function (cityName) {
     var city = {
-        name: cityName
+        name: cityName,
     };
     storeCityName(city);
-}
-
+};
 //save task array to local storage
 function storeCityName(city) {
     //find any items currently saved in local storage
@@ -244,51 +283,90 @@ function storeCityName(city) {
         cities = [];
     }
 
-    cities.push(city);
-
+    //before we add the city, let's check it accross an array of keys with the citity names
+    var inArray = checkIfCityAlreadyExists(city, cities);
+    if(!inArray) {
+        cities.push(city);
+        addACityToTheDom(city.name);
+    }
     localStorage.setItem("cities", JSON.stringify(cities));
+}
+
+//check to see if city exists in array
+function checkIfCityAlreadyExists(cityObject, listOfCityObjects) {
+    var cityName = cityObject.name;
+    //before we add the city, let's check it accross an array of keys with the city names
+    //convert listOfCityObjects into an array
+    var cities = convertArrayOfObjectsIntoArrayOfKeys(listOfCityObjects);
+    // console.log('cityName=>',cityName)
+    // console.log('cities=>',cities)
+    //check if cityName is in array already
+    // return whether or not we should add this city to the local storage
+    return cities.includes(cityName);
+    
+}
+
+//convert the array of objects into an array of keys
+function convertArrayOfObjectsIntoArrayOfKeys(listOfCityObjects) {
+    //declare a list to return
+    var cities = [];
+    //loop throught the array of objects
+    for (let i = 0; i < listOfCityObjects.length; i++) {
+        var city = listOfCityObjects[i];
+        //add just the city's name into the list
+        cities.push(city.name);
+    }
+
+    //return the list
+    return cities;
+} 
+
+//puts a city below searchbar
+function addACityToTheDom(city) {
+    var weatherButtonEl = document.createElement("input");
+    // console.log(weatherButtonEl);
+    weatherButtonEl.value = city;
+    weatherButtonEl.type = 'button';
+    weatherButtonEl.onclick = weatherButtonHandlers;
+    // console.log(city);
+    weatherButtonEl.setAttribute("data-city-name", city);
+    weatherButtonContainerEl.appendChild(weatherButtonEl);
 }
 
 //on page load, pull from storage or create a blank array
 function loadCities() {
     var cities = JSON.parse(localStorage.getItem("cities")) || [];
-    // go through time collection, for every element in time collection find every element to be populated with local stoage data 
+    // go through time collection, for every element in time collection find every element to be populated with local stoage data
     // loop through collection
     for (var i = 0; i < cities.length; i++) {
         // grab the task at each index
         var city = cities[i];
-        console.log(city);
-
-    var weatherButtonEl = document.createElement("div");
-    console.log(weatherButtonEl);
-    
-    weatherButtonEl.textContent = city;
-    console.log(city);
-    
-    weatherButtonEl.setAttribute("data-city-name", city);
-    weatherButtonContainerEl.appendChild(weatherButtonEl);
+        addACityToTheDom(city.name);
     }
 }
-
-
-
 //looks for event (button click event listener below, when you click on a saved weather button)
-var buttonClickHandler = function(event) {
+var buttonClickHandler = function (event) {
     //identifies the target of the event (what was clicked on) and gets value of that "data-city-name" attribute
-    var cityName = event.target.getAttribute("data-city-name")
+    var cityName = event.target.getAttribute("data-city-name");
     //value that is retrieved
     //console.log(language);
     if (cityName) {
         //pass this specified language into the getFeaturedRepos function (use as input)
         getCurrentWeather(cityName);
         getFiveDayWeather(cityName);
-
         // clear old content (clears it first - asynchronous)
         currentCityWeatherEl.textContent = "";
         fiveDayCityWeatherEl.textContent = "";
-      }
+    }
+};
+
+function main() {
+    searchButtonEl.addEventListener("click", formSubmitHandler);
+    loadCities();
 }
 
-searchButtonEl.addEventListener("click", formSubmitHandler);
+main();
+
+
 
 // weatherButtonEl.addEventListener("click", buttonClickHandler);
