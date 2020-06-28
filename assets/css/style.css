@@ -1,50 +1,35 @@
-.h1 {
-    margin: auto;    
+.hero {
+  width: 75%;
 }
 
-header {
-    background-color: rgb(58, 54, 54);
-    color: white;
-}
-
-
-
-.border {
-    border-color: black
-}
-
-.search-form {
-    display: flex;
-    flex-wrap: wrap;
+main {
+  width: 75%;
 }
 
 .searchBtn {
-    border-left: 1px solid black;
-    border-radius: 5px;
-    background-color: rgb(30, 114, 209);
-    color: white;
-    transition: box-shadow 0.2s linear;
-    
-  }
+  border-left: 1px solid black;
+  border-radius: 5px;
+  background-color: rgb(30, 114, 209);
+  color: white;
+  transition: box-shadow 0.2s linear;
+}
 
-  .searchBtn:hover {
-    box-shadow: 0px 0px 0px 4px rgba(11, 172, 236, 0.5);
-  }
+.searchBtn:hover {
+  box-shadow: 0px 0px 0px 4px rgba(11, 172, 236, 0.5);
+}
 
-  .five-day {
-      font-size: medium;
-      font-weight: bold;
-  }
+.five-day {
+  font-size: medium;
+}
 
-  .current-city {
-    font-size: large;
-    font-weight: bold;
-  }
+.current-city {
+  font-size: large;
+  margin: 0;
+}
 
-  .search-city {
-    font-size: small;
-    font-weight: bold;
-    background-color: lightgrey;
-  }
+.search-city {
+  font-size: small;
+  background-color: lightgrey;
+}
   
   

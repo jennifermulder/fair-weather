@@ -3,7 +3,7 @@ var nameInputEl = document.querySelector("#cityname");
 var weatherButtonContainerEl = document.querySelector("#weather-buttons");
 var citySearchEl = document.querySelector("#city-search");
 var currentCityWeatherEl = document.querySelector("#current-city-weather");
-var fiveDayCityContainerEl = document.querySelector("#fiveday-city-container");
+var fiveDayCityContainerEl = document.querySelector("#fiveday-city-title");
 var fiveDayCityWeatherEl = document.querySelector("#fiveday-city-weather");
 
 
@@ -17,6 +17,7 @@ var getCurrentWeather = function (cityName) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
+                    //passing coordinated to nest UV Index API
                     getUVIndex(data.coord.lat, data.coord.lon);
                     displayCurrentWeather(data, cityName);
                 });
@@ -39,7 +40,6 @@ var getUVIndex = function (lat, lon) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-                    // console.log(data);
                     displayCurrentUVWeather(data.value); //pass the uv into a separate HTML generator
                 });
             } else {
@@ -76,8 +76,7 @@ var getFiveDayWeather = function (cityName) {
 
 //when search button is clicked, form is submitted
 var formSubmitHandler = function (event) {
-    console.log("works");
-    event.preventDefault();
+     event.preventDefault();
     // get value from input element
     var cityName = nameInputEl.value.trim();
     if (cityName) {
@@ -88,7 +87,6 @@ var formSubmitHandler = function (event) {
 };
 
 var weatherButtonHandlers = function (event) {
-    // console.log(event.target);
     var cityName = event.target.value;
     startFunctions(cityName);
 }
@@ -104,26 +102,24 @@ var startFunctions = function(cityName) {
 }
 //current date
 var date = moment().format("MM/DD/YYYY");
-// console.log(date);
+
 
 //display the responses/ create elements ( how to pull in parameters)
 var displayCurrentWeather = function (data, cityName) {
     //dynamically create each element for current weather
-    // use const over var when you don't want side effects also it fails LOUDLY
     const icon = data.weather[0].icon;
     const createHtml = function (temp, humidity, windSpeed, uv) {
 
-        const html = `<p class="current-city">${cityName} (<span id="currentDay">${date}</span>) <img src=${
+        const html = `<p class="current-city font-weight-bold">${cityName} (<span id="currentDay">${date}</span>) <img src=${
             "http://openweathermap.org/img/w/" + icon + ".png"}></img></p>
                 <div id="current-temperature">${temp}</div>
                 <div id="current-humidity">${humidity}</div>
                 <div id="current-wind-speed">${windSpeed}</div>`;
         return html;
     };
-    console.log(data.weather[0].icon);
-    console.log(cityName);
+    
     var currentNameDateIconEl = document.createElement("div");
-    currentNameDateIconEl.className = "current-city";
+    currentNameDateIconEl.classList.add("current-city", "font-weight-bold");
 
     currentCityWeatherEl.innerHTML = createHtml(
         "Temperature: " + data.main.temp + " •F",
@@ -179,7 +175,7 @@ var displayFiveDayWeather = function (data, cityName) {
 
     var forecastTextEl = document.createElement("p");
     forecastTextEl.textContent = "5-Day Forecast:";
-    forecastTextEl.className = "five-day";
+    forecastTextEl.classList.add("five-day", "font-weight-bold");
     fiveDayCityContainerEl.innerHTML = "";
     fiveDayCityWeatherEl.innerHTML = "";
     fiveDayCityContainerEl.appendChild(forecastTextEl);
@@ -214,7 +210,7 @@ var displayFiveDayWeather = function (data, cityName) {
         let d = listOfForecastsOrganizedByDay[i][0];
         //create an element for each group 
         let cardDiv = document.createElement("div");
-        cardDiv.classList.add("card", "mx-2", "bg-primary", "text-white");
+        cardDiv.classList.add("card", "mx-2", "p-2", "bg-primary", "text-white");
         //format the date to look like MM/DD/YYYY
         var formattedDate = new moment(d.dt_txt).format('MM/DD/YYYY');
         //pull the four data points

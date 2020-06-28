@@ -6,42 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>Today's Forecast</title>
+    <title>Weather Forecast</title>
 </head>
 
 <body>
-    <header class="hero">
-        <h1>Weather Dashboard</h1>
+    <header class="hero text-white bg-dark">
+        <h1 class="m-0 text-center">Weather Dashboard</h1>
     </header>
 
-    <main class="row justify-space-between border">
-        <div class="col-12 col-md-3 border search-city" id="city-search">
+    <main class="row justify-space-between">
+        <div class="col-12 col-md-3 border search-city font-weight-bold" id="city-search">
             <p>Search for a City:</p>
-            <div class="search-form">
+            <div class="pb-3 d-flex flex-row">
                 <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input" />
                 <button type="submit" class="searchBtn" id="search-button">
                     <i class="fas fa-search" id="search-button"></i>
                 </button>
             </div>
-            <div id="weather-buttons"></div>
+            <div id="weather-buttons" class="d-flex flex-column"></div>
         </div>
         <div class="col-12 col-md-9 d-flex flex-column">
             <div class="row justify-space-around">
-                <div class="col-12 border" id="current-city-weather">
-                   
+                <div class="col-12 border p-2 m-2" id="current-city-weather">
                 </div>
             </div>
             <div class="row justify-space-around">
-                <div class="col-sm-12 d-flex flex-column">
-                    <div id="fiveday-city-container"></div>
-                    <div id="fiveday-city-weather" class="d-flex flex-row"></div>
+                <div class="col-sm-12 d-flex flex-column my-2" id="fiveday-city-container">
+                    <div id="fiveday-city-title"></div>
+                    <div id="fiveday-city-weather" class="d-flex flex-row row"></div>
                 </div>
             </div>
         </div>
-
     </main>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
