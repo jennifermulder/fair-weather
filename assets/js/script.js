@@ -116,7 +116,7 @@ var displayCurrentWeather = function (data, cityName) {
     const createHtml = function (temp, humidity, windSpeed, uv) {
 
         const html = `<p class="current-city font-weight-bold">${cityName} (<span id="currentDay">${date}</span>) <img src=${
-            "http://openweathermap.org/img/w/" + icon + ".png"}></img></p>
+            "https://openweathermap.org/img/w/" + icon + ".png"}></img></p>
                 <div id="current-temperature">${temp}</div>
                 <div id="current-humidity">${humidity}</div>
                 <div id="current-wind-speed">${windSpeed}</div>`;
@@ -175,7 +175,7 @@ var displayFiveDayWeather = function (data, cityName) {
                 </div>
                 <div id="five-icon">
                <img src=${
-            "http://openweathermap.org/img/w/" + icon + ".png"}></img>
+            "https://openweathermap.org/img/w/" + icon + ".png"}></img>
                 </div>
                 <div id="five-temp">
                        ${temp}
