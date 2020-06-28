@@ -33,7 +33,7 @@ var getCurrentWeather = function (cityName) {
 };
 var getUVIndex = function (lat, lon) {
     var apiUVIUrl =
-        "http://api.openweathermap.org/data/2.5/uvi?appid=a514515ab34188949832b8c89e71bb2e&lat=" +
+        "https://api.openweathermap.org/data/2.5/uvi?appid=a514515ab34188949832b8c89e71bb2e&lat=" +
         lat +
         "&lon=" +
         lon;
