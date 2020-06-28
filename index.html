@@ -18,6 +18,7 @@
     </header>
 
     <main class="row justify-space-between">
+        <!--Search Section-->
         <div class="col-12 col-md-3 border search-city font-weight-bold" id="city-search">
             <p>Search for a City:</p>
             <div class="pb-3 d-flex flex-row">
@@ -28,14 +29,18 @@
             </div>
             <div id="weather-buttons" class="d-flex flex-column"></div>
         </div>
+        <!--Display Weather Information-->
         <div class="col-12 col-md-9 d-flex flex-column">
+            <!--Current Weather Information-->
             <div class="row justify-space-around">
                 <div class="col-12 border p-2 m-2" id="current-city-weather">
                 </div>
             </div>
+            <!--Five-Day Forecast Weather Information-->
             <div class="row justify-space-around">
-                <div class="col-sm-12 d-flex flex-column my-2" id="fiveday-city-container">
+                <div class="col-sm-12 d-flex flex-column my-2">
                     <div id="fiveday-city-title"></div>
+                    <!--Weather Cards-->
                     <div id="fiveday-city-weather" class="d-flex flex-row row"></div>
                 </div>
             </div>

@@ -17,8 +17,9 @@ var getCurrentWeather = function (cityName) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-                    //passing coordinated to nest UV Index API
+                    //passing coordinates to nested UV Index API
                     getUVIndex(data.coord.lat, data.coord.lon);
+                    //pass data into current day HTML generator
                     displayCurrentWeather(data, cityName);
                 });
             } else {
@@ -40,7 +41,8 @@ var getUVIndex = function (lat, lon) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
-                    displayCurrentUVWeather(data.value); //pass the uv into a separate HTML generator
+                    //pass the uv into a separate HTML generator
+                    displayCurrentUVWeather(data.value);
                 });
             } else {
                 alert("Error: " + response.statusText);
@@ -61,6 +63,7 @@ var getFiveDayWeather = function (cityName) {
         .then(function (response) {
             if (response.ok) {
                 response.json().then(function (data) {
+                    //pass the data into 5-day card HTML generator
                     displayFiveDayWeather(data, cityName);
                 });
             } else {
@@ -74,9 +77,9 @@ var getFiveDayWeather = function (cityName) {
 };
 
 
-//when search button is clicked, form is submitted
+//when search button is clicked, the city name is submited to the functions
 var formSubmitHandler = function (event) {
-     event.preventDefault();
+    event.preventDefault();
     // get value from input element
     var cityName = nameInputEl.value.trim();
     if (cityName) {
@@ -86,25 +89,27 @@ var formSubmitHandler = function (event) {
     }
 };
 
+//when a generated city button is clicked, the city name is submited to the functions
 var weatherButtonHandlers = function (event) {
     var cityName = event.target.value;
     startFunctions(cityName);
 }
 
-// do or handle the api logic and local storage save
-var startFunctions = function(cityName) {
+//city name is submited to the api logic for data to be fetched
+//city name is submited to local storage save function
+var startFunctions = function (cityName) {
     getCurrentWeather(cityName);
     getFiveDayWeather(cityName);
     saveCityName(cityName);
-    //to clear the form
+    //Input form is cleared
     nameInputEl.value = ""
-    ;
+        ;
 }
 //current date
 var date = moment().format("MM/DD/YYYY");
 
 
-//display the responses/ create elements ( how to pull in parameters)
+//display the responses/ create elements
 var displayCurrentWeather = function (data, cityName) {
     //dynamically create each element for current weather
     const icon = data.weather[0].icon;
@@ -117,7 +122,7 @@ var displayCurrentWeather = function (data, cityName) {
                 <div id="current-wind-speed">${windSpeed}</div>`;
         return html;
     };
-    
+
     var currentNameDateIconEl = document.createElement("div");
     currentNameDateIconEl.classList.add("current-city", "font-weight-bold");
 
@@ -126,53 +131,36 @@ var displayCurrentWeather = function (data, cityName) {
         "Humidity: " + data.main.humidity + "%",
         "Wind Speed: " + data.wind.speed + " MPH"
     );
-
-    //create stats ex:temperature div
-    var currentTemperatureEl = document.createElement("div");
-
-    currentCityWeatherEl.appendChild(currentTemperatureEl);
-    var currentHumidityEl = document.createElement("div");
-
-    currentCityWeatherEl.appendChild(currentHumidityEl);
-    var currentwindSpeedEl = document.createElement("div");
-
-    currentCityWeatherEl.appendChild(currentwindSpeedEl);
-
 };
+
 //display UV value from nested API call
 var displayCurrentUVWeather = function (uv) {
-    // decide if it's favorable, moderate or severe
-
-    //create a div element
     var uvIndexContainerEl = document.createElement("div");
-    // add it's text content "UV Index"
     uvIndexContainerEl.textContent = "UV Index: ";
-    // create a span element
     var uvIndexEl = document.createElement("span");
-    // set the textcontent or innertext or innerhtml to the uv variable
+    //set the textcontent or innertext or innerhtml to the uv variable
     uvIndexEl.textContent = uv;
-    
-    //if low
-    if (uv < 3  ) {
-    //if moderate
-    // set the class attribute to the bootstrap class
-    uvIndexEl.classList.add('badge',"badge-success");
-    } else if( uv > 2 && uv < 6) {
-    uvIndexEl.classList.add('badge',"badge-warning");
+
+    //determine if conditions are favorable, moderate, or severe
+    if (uv < 3) {
+        //if favorable
+        //set the class attribute to the bootstrap class
+        uvIndexEl.classList.add('badge', "badge-success");
+    } else if (uv > 2 && uv < 6) {
+        //if moderate
+        uvIndexEl.classList.add('badge', "badge-warning");
     } else {
-    uvIndexEl.classList.add('badge',"badge-danger");
+        //if severe
+        uvIndexEl.classList.add('badge', "badge-danger");
     }
-    //add it to the div
+
     uvIndexContainerEl.appendChild(uvIndexEl);
-    //add the div to the dom
     document.querySelector('#current-city-weather').appendChild(uvIndexContainerEl);
 };
 
-
+//display the responses/ create elements
 var displayFiveDayWeather = function (data, cityName) {
-    // console.log(data);
-    // console.log(cityName);
-
+    //dynamically create each element for five-day weather
     var forecastTextEl = document.createElement("p");
     forecastTextEl.textContent = "5-Day Forecast:";
     forecastTextEl.classList.add("five-day", "font-weight-bold");
@@ -197,18 +185,16 @@ var displayFiveDayWeather = function (data, cityName) {
                 </div>`;
         return html;
     };
-    //create 5 day forecast
-    // organize the forecasts by day
 
-    var listOfForecastsOrganizedByDay = organizeMyDataByDay(data.list); // array of organized forecasts by day
-    // console.log('LIST OF FORECASTS BY DAY=>', listOfForecastsOrganizedByDay);
+    //create 5 day forecast
+    // array of organized forecasts by day (response provides data every 3 hours for 6 days)
+    var listOfForecastsOrganizedByDay = organizeMyDataByDay(data.list);
 
     //add the forecasts to dom
-    //loop through list of forecasts by day for the first 5 days (hard code the upper limit /or take a slice)
+    //loop through list of forecasts by day for the first 5 days (hard code the upper limit)
     for (let i = 0; i < 5; i++) {
-        //take the first one for now
+        //using the conditions from the first set of recorded data for each day card being generated
         let d = listOfForecastsOrganizedByDay[i][0];
-        //create an element for each group 
         let cardDiv = document.createElement("div");
         cardDiv.classList.add("card", "mx-2", "p-2", "bg-primary", "text-white");
         //format the date to look like MM/DD/YYYY
@@ -220,57 +206,58 @@ var displayFiveDayWeather = function (data, cityName) {
             "Temp: " + d.main.temp + " •F",
             "Humidity: " + d.main.humidity + "%"
         );
-        //add them to the card
         fiveDayCityWeatherEl.append(cardDiv);
     }
-
-    //saveSearch();
 };
 
-//function to organize forecasts by day
+//Organize forecasts by day to be used in array creation to create weather cards
 function organizeMyDataByDay(listOfDates) {
-    var groupOfForcastsByDate = {}; //map ex. new Map()
-    // iterated through the 40 objects in the array
+    //map ex. new Map()
+    var groupOfForcastsByDate = {}; 
+    //iterate through the 40 objects in the array
     for (let i = 0; i < listOfDates.length; i++) {
-        // then take each object's time stamp and check to see if a map has the date key
+        //take each object's date stamp and check to see if a map already has the date key
         var forecast = listOfDates[i];
-        var key = new moment(forecast.dt_txt).format('MM/DD/YYYY'); // 6/30/2020
-        // if it does add it to a collection from that date
+        var key = new moment(forecast.dt_txt).format('MM/DD/YYYY');
+        //exists: add to an existing collection for that date
         if (groupOfForcastsByDate.hasOwnProperty(key)) {
             groupOfForcastsByDate[key].push(forecast);
         } else {
-            // if it does not, create a new entry in the map
+            //does not exist: create a new entry in the map
             groupOfForcastsByDate[key] = [forecast];
         }
     }
-    // return a list not an object
+    //return an array not an object
     return convertObjectToArray(groupOfForcastsByDate);
 }
 
-// function to convert object to array of objects
+//convert object to array of objects
 function convertObjectToArray(groupOfForcastsByDate) {
-    //we need to go through every entry in the map and add that to a list
-    var keys = Object.keys(groupOfForcastsByDate); // here are my keys/dates
-    //for every entry or date key, add it to a list
+    //to go through every entry in the map and add to a list
+    //keys to iterate (dates)
+    var keys = Object.keys(groupOfForcastsByDate);
+    //for every date key, add it to a list
     var listOfDays = [];
 
     for (let i = 0; i < keys.length; i++) {
-        var key = keys[i]; // 6/28/2020
+        //date
+        var key = keys[i];
         var threeHourForecast = groupOfForcastsByDate[key];
-        // add the threeHourForecast collection to the list
+        //add the threeHourForecast collection (all weather data for one day) to the list
         listOfDays.push(threeHourForecast);
     }
     // return list of days
     return listOfDays;
 }
 
-//function to save search results in local storage
+//save search results in local storage
 var saveCityName = function (cityName) {
     var city = {
         name: cityName,
     };
     storeCityName(city);
 };
+
 //save task array to local storage
 function storeCityName(city) {
     //find any items currently saved in local storage
@@ -279,9 +266,10 @@ function storeCityName(city) {
         cities = [];
     }
 
-    //before we add the city, let's check it accross an array of keys with the citity names
+    //check city searched, accross an array of keys with the city names
     var inArray = checkIfCityAlreadyExists(city, cities);
-    if(!inArray) {
+    if (!inArray) {
+        //city does not exist: add city to array
         cities.push(city);
         addACityToTheDom(city.name);
     }
@@ -291,15 +279,11 @@ function storeCityName(city) {
 //check to see if city exists in array
 function checkIfCityAlreadyExists(cityObject, listOfCityObjects) {
     var cityName = cityObject.name;
-    //before we add the city, let's check it accross an array of keys with the city names
     //convert listOfCityObjects into an array
     var cities = convertArrayOfObjectsIntoArrayOfKeys(listOfCityObjects);
-    // console.log('cityName=>',cityName)
-    // console.log('cities=>',cities)
-    //check if cityName is in array already
-    // return whether or not we should add this city to the local storage
+    //return whether or not city should be added to the local storage 
     return cities.includes(cityName);
-    
+
 }
 
 //convert the array of objects into an array of keys
@@ -315,16 +299,14 @@ function convertArrayOfObjectsIntoArrayOfKeys(listOfCityObjects) {
 
     //return the list
     return cities;
-} 
+}
 
-//puts a city below searchbar
+//add city button below searchbar
 function addACityToTheDom(city) {
     var weatherButtonEl = document.createElement("input");
-    // console.log(weatherButtonEl);
     weatherButtonEl.value = city;
     weatherButtonEl.type = 'button';
     weatherButtonEl.onclick = weatherButtonHandlers;
-    // console.log(city);
     weatherButtonEl.setAttribute("data-city-name", city);
     weatherButtonContainerEl.appendChild(weatherButtonEl);
 }
@@ -332,37 +314,32 @@ function addACityToTheDom(city) {
 //on page load, pull from storage or create a blank array
 function loadCities() {
     var cities = JSON.parse(localStorage.getItem("cities")) || [];
-    // go through time collection, for every element in time collection find every element to be populated with local stoage data
-    // loop through collection
+    //go through time collection, for every element in time collection find every element to be populated with local stoage data
+    //loop through collection
     for (var i = 0; i < cities.length; i++) {
-        // grab the task at each index
+        //grab the city at each index
         var city = cities[i];
         addACityToTheDom(city.name);
     }
 }
 //looks for event (button click event listener below, when you click on a saved weather button)
 var buttonClickHandler = function (event) {
-    //identifies the target of the event (what was clicked on) and gets value of that "data-city-name" attribute
+    //identifies the target of the event and gets value of that "data-city-name" attribute
     var cityName = event.target.getAttribute("data-city-name");
     //value that is retrieved
-    //console.log(language);
     if (cityName) {
-        //pass this specified language into the getFeaturedRepos function (use as input)
         getCurrentWeather(cityName);
         getFiveDayWeather(cityName);
-        // clear old content (clears it first - asynchronous)
+        // clear old content 
         currentCityWeatherEl.textContent = "";
         fiveDayCityWeatherEl.textContent = "";
     }
 };
 
+//load cities on search
 function main() {
     searchButtonEl.addEventListener("click", formSubmitHandler);
     loadCities();
 }
-
 main();
 
-
-
-// weatherButtonEl.addEventListener("click", buttonClickHandler);
