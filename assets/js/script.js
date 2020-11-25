@@ -281,7 +281,6 @@ function checkIfCityAlreadyExists(cityObject, listOfCityObjects) {
     var cities = convertArrayOfObjectsIntoArrayOfKeys(listOfCityObjects);
     //return whether or not city should be added to the local storage 
     return cities.includes(cityName);
-
 }
 
 //convert the array of objects into an array of keys
