@@ -17,7 +17,7 @@ This weather dashboard shows the current day's weather as well as the upcoming f
 * Server-Side APIs (Open Weather Map.org - source: https://openweathermap.org/)
 
 ## Website
-https://jennifer.mulder.github.io/fair-weather/
+https://jennifermulder.github.io/fair-weather/
 
 ## Project Status
 Scheduler is compliant with defined acceptance criteria

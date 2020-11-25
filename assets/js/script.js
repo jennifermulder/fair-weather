@@ -115,8 +115,7 @@ var displayCurrentWeather = function (data, cityName) {
     const icon = data.weather[0].icon;
     const createHtml = function (temp, humidity, windSpeed, uv) {
 
-        const html = `<p class="current-city font-weight-bold">${cityName} (<span id="currentDay">${date}</span>) <img src=${
-            "https://openweathermap.org/img/w/" + icon + ".png"}></img></p>
+        const html = `<p class="current-city font-weight-bold">${cityName} (<span id="currentDay">${date}</span>) <img src=${"https://openweathermap.org/img/w/" + icon + ".png"}></img></p>
                 <div id="current-temperature">${temp}</div>
                 <div id="current-humidity">${humidity}</div>
                 <div id="current-wind-speed">${windSpeed}</div>`;
@@ -174,8 +173,7 @@ var displayFiveDayWeather = function (data, cityName) {
                    ${date}
                 </div>
                 <div id="five-icon">
-               <img src=${
-            "https://openweathermap.org/img/w/" + icon + ".png"}></img>
+               <img src=${"https://openweathermap.org/img/w/" + icon + ".png"}></img>
                 </div>
                 <div id="five-temp">
                        ${temp}
@@ -213,7 +211,7 @@ var displayFiveDayWeather = function (data, cityName) {
 //Organize forecasts by day to be used in array creation to create weather cards
 function organizeMyDataByDay(listOfDates) {
     //map ex. new Map()
-    var groupOfForcastsByDate = {}; 
+    var groupOfForcastsByDate = {};
     //iterate through the 40 objects in the array
     for (let i = 0; i < listOfDates.length; i++) {
         //take each object's date stamp and check to see if a map already has the date key
