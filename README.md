@@ -20,7 +20,7 @@ This weather dashboard shows the current day's weather as well as the upcoming f
 https://jennifermulder.github.io/fair-weather/
 
 ## Project Status
-Scheduler is compliant with defined acceptance criteria
+This weather dashboard is compliant with defined acceptance criteria
 
 ## Contribution
 Created by Jennifer Mulder
